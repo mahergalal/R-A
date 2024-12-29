@@ -50,7 +50,8 @@
                         <a class="btn btn-primary" href="{{route('LogSheet.back.trash',$item->id)}}">Back</a>
                       </div>
                       <div class="col-sm">
-                        <a class="btn btn-danger" href="{{route('LogSheet.delete.trash',$item->id)}}">Delete</a>
+                        <button class="btn btn-danger delete-logsheet" data-id="{{ $item->id }}">Delete</button>
+
                       </div>
 
                      </div>
@@ -64,4 +65,34 @@
 </table>
 
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+$(document).ready(function () {
+    $('.delete-logsheet').on('click', function () {
+        const logSheetId = $(this).data('id');
+        const deleteUrl = `/logsheet/delete/${logSheetId}`; // Adjust based on route definition
+
+        if (confirm('Are you sure you want to delete this log sheet?')) {
+            $.ajax({
+                url: deleteUrl,
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (response) {
+                    alert(response.message);
+                    location.reload(); // Refresh the page to update the table
+                },
+                error: function (xhr) {
+                    alert('An error occurred: ' + xhr.responseText);
+                }
+            });
+        }
+    });
+});
+
+</script>
+
 @endsection

@@ -29,9 +29,10 @@ class UserReportMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'User Report Mail',
+            subject: 'R&A Daily Report',
         );
     }
+
 
      /**
      * Build the message.

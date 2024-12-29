@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\LogSheet;
 use Illuminate\Http\Request;
@@ -45,70 +46,70 @@ class LogSheetController extends Controller
      * Store a newly created resource in storage.
      */
 
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name_of_plane' => 'required|string',
-            'no_of_flight' => 'required|integer',
-            'srart_date' => 'required|date',
-            'end_date' => 'required|date',
-            'take_of_time' => 'required|date_format:H:i',
-            'landing_time' => 'required|date_format:H:i',
-            'deprature' => 'required|string',
-            'arrival' => 'required|string',
-        ]);
-/*
-        // Calculate the time difference between takeoff and landing times
-        $takeoffTime = Carbon::parse($validatedData['take_of_time']);
-        $landingTime = Carbon::parse($validatedData['landing_time']);
-        $hours = $takeoffTime->diffInHours($landingTime);
-        $minutes = $takeoffTime->diffInMinutes($landingTime) % 60;
-        $timeDifference = $hours . '.' . str_pad($minutes, 2, '0', STR_PAD_LEFT);*/
+     public function store(Request $request)
+{
+    // Validate input fields
+    $validatedData = $request->validate([
+        'name_of_plane' => 'required|string',
+        'no_of_flight' => 'required|integer',
+        'srart_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:srart_date',
+        'take_of_time' => 'required|date_format:H:i',
+        'landing_time' => 'required|date_format:H:i',
+        'deprature' => 'required|string|different:arrival',
+        'arrival' => 'required|string',
+    ]);
 
-        // Save the LogSheet data
-        // Assuming you have a LogSheet model
-        LogSheet::create($validatedData);
+    // Parse dates and times
+    $startDate = Carbon::createFromFormat('Y-m-d', $validatedData['srart_date']);
+    $endDate = Carbon::createFromFormat('Y-m-d', $validatedData['end_date']);
+    $takeoffTime = Carbon::createFromFormat('H:i', $validatedData['take_of_time']);
+    $landingTime = Carbon::createFromFormat('H:i', $validatedData['landing_time']);
 
-        $takeOffTime = Carbon::createFromFormat('H:i', $request->take_of_time);
-$landingTime = Carbon::createFromFormat('H:i', $request->landing_time);
-
-// Calculate the total hours and minutes difference
-$hours = $landingTime->diffInHours($takeOffTime);
-$minutes = $landingTime->diffInMinutes($takeOffTime) % 60;
-
-// Format the difference as "hours.minutes" (e.g., "1.30" for 1 hour and 30 minutes)
-$difference = $hours + ($minutes / 100); // This will give a result like 1.30 or 1.05
-
-// Now, use $difference as needed in your increments
-
-         // Calculate time difference between `take_of_time` and `landing_time`
-        // $takeOffTime = Carbon::createFromFormat('H:i', $request->take_of_time);
-         //$landingTime = Carbon::createFromFormat('H:i', $request->landing_time);
-
-         //$difference = $landingTime->diffInHours($takeOffTime);
-
-        if ($request->name_of_plane === 'AFA320') {
-            DB::table('cycle_a_s')->increment('current', 1);
-            DB::table('hours')->increment('current', $difference);
-        }
-        elseif ($request->name_of_plane === 'AFB320') {
-            // Increment `current` in `cycle_b_s` by 1
-            DB::table('cycle_b_s')->increment('current', 1);
-            // Increment `current` in `hour_b_s` by the time difference
-            DB::table('hour_b_s')->increment('current', $difference);
-
-        } elseif ($request->name_of_plane === 'AFC320') {
-            // Increment `current` in `cycle_c_s` by 1
-            DB::table('cycle_c_s')->increment('current', 1);
-            // Increment `current` in `hourcs` by the time difference
-            DB::table('hourcs')->increment('current', $difference);
-        }
-
-
-
-        return response()->json(['success' => true, 'message' => 'LogSheet saved successfully!']);
-
+    // Adjust landing time if it's on the next day
+    if ($endDate->greaterThan($startDate) || $landingTime->lt($takeoffTime)) {
+        $landingTime->addDay();
     }
+
+    // Calculate the time difference in hours
+    $timeDifferenceInHours = $takeoffTime->diffInHours($landingTime);
+    $timeDifferenceInMinutes = $takeoffTime->diffInMinutes($landingTime) % 60;
+
+    if ($timeDifferenceInHours > 20) {
+        return back()->withErrors(['landing_time' => 'The time difference between Takeoff and Landing cannot exceed 20 hours.']);
+    }
+
+    // Verify end_date is not before srart_date (Laravel rule already handles this)
+    if ($endDate->lt($startDate)) {
+        return back()->withErrors(['end_date' => 'The End Date cannot be before the Start Date.']);
+    }
+
+    // Verify that destinations are not the same
+    if ($validatedData['deprature'] === $validatedData['arrival']) {
+        return back()->withErrors(['arrival' => 'The Departure and Arrival locations cannot be the same.']);
+    }
+
+    // Store the validated data into the database
+    LogSheet::create($validatedData);
+
+    // Increment values based on the plane name
+    $difference = $timeDifferenceInHours + ($timeDifferenceInMinutes / 60);
+    if ($validatedData['name_of_plane'] === 'AFA320') {
+        DB::table('cycle_a_s')->increment('current', 1);
+        DB::table('hours')->increment('current', $difference);
+    } elseif ($validatedData['name_of_plane'] === 'AFB320') {
+        DB::table('cycle_b_s')->increment('current', 1);
+        DB::table('hour_b_s')->increment('current', $difference);
+    } elseif ($validatedData['name_of_plane'] === 'AFC320') {
+        DB::table('cycle_c_s')->increment('current', 1);
+        DB::table('hourcs')->increment('current', $difference);
+    }
+
+    return response()->json(['success' => true, 'message' => 'LogSheet saved successfully!']);
+    return redirect()->back()->with('success', 'LogSheet saved successfully!');
+    return redirect()->route('Pilot.create')->with('success', 'LogSheet saved successfully!');
+}
+
 
 
     /**
@@ -209,14 +210,74 @@ $difference = $hours + ($minutes / 100); // This will give a result like 1.30 or
         ->with('success','LogSheet deleted successflly') ;
     }
 
-    public function  deleteForEver(  $id)
+    public function deleteForEver($id)
     {
+        // Retrieve the soft-deleted LogSheet record
+        $logSheet = LogSheet::onlyTrashed()->where('id', $id)->first();
 
-        $LogSheet = LogSheet::onlyTrashed()->where('id' , $id)->forceDelete();
+        if (!$logSheet) {
+            return response()->json(['error' => 'LogSheet not found'], 404);
+        }
 
-        return redirect()->route('LogSheet.trash')
-        ->with('success','LogSheet deleted successflly') ;
+        // Debugging log for input data
+        Log::info('LogSheet record:', $logSheet->toArray());
+
+        $difference = 0; // Default time difference
+
+        try {
+            // Check if the times exist and are valid
+            if (!empty($logSheet->take_of_time) && !empty($logSheet->landing_time)) {
+                // Adjust parsing format to include seconds
+                $takeoffTime = Carbon::createFromFormat('H:i:s', trim($logSheet->take_of_time));
+                $landingTime = Carbon::createFromFormat('H:i:s', trim($logSheet->landing_time));
+
+                // Adjust landing time if it is earlier than takeoff time (next day scenario)
+                if ($landingTime->lt($takeoffTime)) {
+                    $landingTime->addDay();
+                }
+
+                // Calculate the time difference
+                $timeDifferenceInHours = $takeoffTime->diffInHours($landingTime);
+                $timeDifferenceInMinutes = $takeoffTime->diffInMinutes($landingTime) % 60;
+                $difference = $timeDifferenceInHours + ($timeDifferenceInMinutes / 60);
+            }
+        } catch (\Exception $e) {
+            // Log and continue if there is an issue with time parsing
+            Log::error('Error parsing times for LogSheet ID: ' . $id, ['error' => $e->getMessage()]);
+        }
+
+        Log::info('Time difference calculated:', ['difference' => $difference]);
+
+        DB::transaction(function () use ($logSheet, $difference) {
+            // Decrement logic based on the plane name
+            switch ($logSheet->name_of_plane) {
+                case 'AFA320':
+                    DB::table('cycle_a_s')->decrement('current', 1);
+                    DB::table('hours')->decrement('current', $difference);
+                    break;
+
+                case 'AFB320':
+                    DB::table('cycle_b_s')->decrement('current', 1);
+                    DB::table('hour_b_s')->decrement('current', $difference);
+                    break;
+
+                case 'AFC320':
+                    DB::table('cycle_c_s')->decrement('current', 1);
+                    DB::table('hourcs')->decrement('current', $difference);
+                    break;
+
+                default:
+                    throw new \Exception('Invalid plane name');
+            }
+
+            $logSheet->forceDelete();
+        });
+
+        return response()->json(['message' => 'LogSheet deleted successfully!'], 200);
     }
+
+
+
 
     public function backSoftDelete($id)
     {

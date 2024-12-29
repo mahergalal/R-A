@@ -1,59 +1,93 @@
-@extends('Admin.cycleA.layout')
+@extends('Admin.layout.layout')
+@section('adminContent')
+<div class="main-content {{ auth()->check() && auth()->user()->role === 0 ? 'with-sidebar' : 'no-sidebar' }}" >
+    <div class="section">
+        <div class="container">
+            <div class="row justify-content-left">
+                <div class="col-lg-12">
+                    <span class="h5">Date B Trash</span>
+                </div>
 
-@section('content')
+                                <div class="row justify-content-left">
+                                    <div class="col-lg-12">
+                                        <div class="mb-3">
+                                            <a class="btn btn-primary" type="button" href="{{route('dateB.index')}}"> Home</button></a>
+                                        </div>
+                                        <!--Buttons-->
 
-<div class="jumbotron">
+                            </div>
 
- <p>Trash </p>
-  <a class="btn btn-primary btn-lg" href="{{route('dateB.index')}}" role="button">Home</a>
-</div>
+                        </div>
+
+                    </div>
+
+                </div>
 
 
+                <div class="mb-5">
+
+                    <div class="container">
+                    <table class="table shadow-soft rounded">
+                    <thead >
+                        <tr>
+                            <th class="border-0" scope="col" >ID</th>
+                            <th class="border-0" scope="col" >Name</th>
+                            <th class="border-0" scope="col" >Serial No.</th>
+                            <th class="border-0" scope="col" >current</th>
+                            <th class="border-0" scope="col" >max </th>
+                            <th class="border-0" scope="col" id="females" >Action</th>
 
 
-<div class="container">
-<table class="table">
-    <thead class="thead-dark">
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">Part Name</th>
-        <th scope="col">Serial NO</th>
-        <th scope="col">current cycle</th>
-        <th scope="col">max cycle</th>
-        <th scope="col">Action</th>
-    </tr>
-    </thead>
-    <tbody>
-        @php
-           $i =0;
-        @endphp
-        @foreach ($dateB as $item)
-        <tr>
-            <th scope="row">{{++ $i}}</th>
-            <td>{{$item->name}}</td>
-            <td>{{$item->serial}}</td>
-            <td>{{$item->start}}</td>
-            <td>{{$item->max}}</td>
-            <td>
-                <div class="container">
-                    <div class="row">
+                        </tr>
+                    </thead>
 
-                      <div class="col-sm">
-                        <a class="btn btn-primary" href="{{route('dateB.back.trash',$item->id)}}">Back</a>
-                      </div>
-                      <div class="col-sm">
-                        <a class="btn btn-danger" href="{{route('dateB.delete.trash',$item->id)}}">Delete</a>
-                      </div>
+                    <tbody>
+                        @php
+                           $i =0;
+                        @endphp
+                        @foreach ($dateB as $item)
 
-                     </div>
-                 </div>
+                        <tr>
+                            <th scope="row">{{++ $i}}</th>
+                            <td>{{$item->name}}</td>
+                            <td>{{$item->serial}}</td>
+                            <td>{{$item->start}}</td>
+                            <td>{{$item->max}}</td>
+                            <td>
+                                <div class="container">
+                                    <div class="row">
+                                      <div class="col-sm">
+                                        <a class="btn btn-primary" type="button" href="{{route('dateB.back.trash',$item->id)}}">Back</a>                                          </div>
 
-            </td>
-        </tr>
-        @endforeach
+                                      <div class="col-sm">
+                                        <a class="btn btn-primary ml-2" type="button" href="{{route('dateB.delete.trash',$item->id)}}">Delete</i></a>
+                                      </div>
 
-    </tbody>
-</table>
+                                      {{--
+                 <div class="col-sm">
+                                        <form action="{{route('cycleA.destroy',$item->id)}}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-danger"> Delete</button>
+                                        </form>
+                                      </div>
 
-</div>
+                                      --}}
+
+                                    </div>
+                                 </div>
+
+                            </td>
+                        </tr>
+                        @endforeach
+
+                    </tbody>
+
+                    </table>
+
+                </div>
+                </div>
+                </div>
+                </div>
+
 @endsection

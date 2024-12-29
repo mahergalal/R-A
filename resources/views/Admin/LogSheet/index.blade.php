@@ -72,17 +72,17 @@
                             <td>{{$item->deprature}}</td>
                             <td>{{$item->arrival}}</td>
                             <td>
-                                <div class="container">
-                                    <div class="row">
-                                      <div class="col-sm">
-                                        <a class="btn btn-primary" type="button" href="{{route('LogSheet.edit',$item->id)}}"><i class="fas fa-solid fa-pen"></i></a>                                          </div>
 
-                                      <div class="col-sm">
-                                        <a class="btn btn-primary ml-2" type="button" href="{{route('LogSheet.show',$item->id)}}"><i class="fas fa-light fa-eye"></i></a>
-                                      </div>
-                                      <div class="col-sm">
-                                        <a class="btn btn-primary ml-2" type="button" href="{{route('softl.delete',$item->id)}}"><i class="fas fa-solid fa-trash"></i></a>
-                                      </div>
+           
+                                    <div class="row justify-content-left">
+                                        <div class="col-lg-12">
+                                            <div class="mb-3">
+                                                <a class="btn btn-primary" type="button" href="{{route('LogSheet.edit',$item->id)}}"><i class="fas fa-solid fa-pen"></i></a>
+                                                <a class="btn btn-primary ml-2" type="button" href="{{route('softl.delete',$item->id)}}"><i class="fas fa-solid fa-trash"></i></a>
+                                            </div>
+                                            <!--Buttons-->
+
+                                </div>
                                       {{--
                  <div class="col-sm">
                                         <form action="{{route('cycleA.destroy',$item->id)}}" method="POST">
@@ -94,7 +94,7 @@
 
                                       --}}
 
-                                    </div>
+
                                  </div>
 
                             </td>

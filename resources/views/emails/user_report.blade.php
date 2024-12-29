@@ -16,7 +16,7 @@
         <ul>
             @foreach ($notifications as $notification)
                 <li>
-                    <strong>Message:</strong> {{ $notification->message }}<br>
+                     {{ $notification->message }}<br>
                     <strong>Created At:</strong> {{ $notification->created_at->format('Y-m-d H:i:s') }}<br>
                 </li>
             @endforeach

@@ -2438,7 +2438,7 @@ pre code {
     font-weight: 300;
     line-height: 1.5;
     color: #44476A;
-    background-color: #e6e7ee;
+    background-color: whitesmoke;
     background-clip: padding-box;
     border: 0.0625rem solid #D1D9E6;
     border-radius: 0.55rem;
@@ -6119,7 +6119,7 @@ input[type="button"].btn-block {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 1rem;
+
 }
 
 .navbar > .container,
@@ -6529,7 +6529,7 @@ input[type="button"].btn-block {
 
 .card-body {
     flex: 1 1 auto;
-    padding: 1.5rem;
+    padding-inline: 1.5rem;
 }
 
 .card-title {
@@ -9346,9 +9346,7 @@ a.close.disabled {
     vertical-align: text-top !important;
 }
 
-.bg-primary {
-    background-color: #e6e7ee !important;
-}
+
 
 a.bg-primary:hover, a.bg-primary:focus,
 button.bg-primary:hover,
@@ -11191,6 +11189,7 @@ button.bg-slack:focus {
 .mb-5,
 .my-5 {
     margin-bottom: 3rem !important;
+
 }
 
 .ml-5,
@@ -21870,10 +21869,10 @@ button.section-slack:focus {
 }
 
 .shadow-soft-r9 {
-    box-shadow: 6px 6px 12px red, -6px -6px 12px red !important;
+    box-shadow: 2px 2px 2px red, -2px -2px 2px red !important;
 }
 .shadow-soft-r8 {
-    box-shadow: 6px 6px 12px yellow, -6px -6px 12px yellow !important;
+    box-shadow: 2px 2px 2px yellow, -2px -2px 2px yellow !important;
 }
 
 .shadow-inset {
@@ -22742,7 +22741,7 @@ button.section-slack:focus {
 }
 
 .navbar-brand img {
-    height: 20px;
+    height: 75px;
 }
 
 .navbar-dark .navbar-brand-light {
@@ -29075,7 +29074,9 @@ a.badge-slack:hover, a.badge-slack:focus {
     font-size: 1rem;
     box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #FFFFFF;
     border: 0;
+    background-color: whitesmoke;
 }
+
 
 .custom-select.custom-select-shadow {
     box-shadow: inset 2px 2px 5px #b8b9be, inset -3px -3px 7px #FFFFFF;
@@ -32283,7 +32284,7 @@ article a:hover {
     z-index: 2; /* Higher than header to appear in the foreground */
 
 
-    padding: 20px;
+    /*padding: 20px;*/
     height: 100vh;
     overflow-y: auto; /* Align items vertically */
 }
@@ -32296,9 +32297,20 @@ article a:hover {
 
 .profile-section {
     display: flex;
+    width:100%;
     align-items: center;
     margin-bottom: 1rem; /* Space below profile section */
     padding: 0.5rem;
+    background: transparent; /* Slightly lighter background for profile section */
+    border-radius: 10px;
+    box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.3); /* Inset neumorphic shadow */
+}
+.profile-section-r9  {
+    display: flex;
+
+    align-items: center;
+    margin: 1rem; /* Space below profile section */
+    padding: 1.5rem;
     background: transparent; /* Slightly lighter background for profile section */
     border-radius: 10px;
     box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.3), inset -4px -4px 8px rgba(255, 255, 255, 0.3); /* Inset neumorphic shadow */
@@ -32371,7 +32383,7 @@ article a:hover {
 .main-content.no-sidebar {
     margin-left: 0;
 }
- 
+
 
 .section {
     background: #f0f0f0; /* Light background for the section */
@@ -32380,7 +32392,7 @@ article a:hover {
 }
 
 footer {
-    background-color: #f0f0f0; /* Changed footer color */
+    background-color: #e0e0e0; /* Changed footer color */
     color: #0b0a0a; /* Text color */
 }
 
@@ -32404,6 +32416,12 @@ footer {
 .card {
     margin: 0 auto; /* Center the card */
     max-width: 600px; /* Set a max width for the card */
+    background-color: #ffffff;
+}
+.card-m10 {
+    margin: 0 auto; /* Center the card */
+    max-width: 600px; /* Set a max width for the card */
+    background-color:   white;
 }
 fieldset {
     margin: 1rem 0; /* Add margin to the fieldset */
@@ -32434,6 +32452,7 @@ legend {
 
             font-family: 'Font Awesome 5 Free';
             font-size: x-large;
+
         }
         .header-global {
             position: relative;
@@ -32441,16 +32460,16 @@ legend {
             left: 0;
             height: 40px; /* Reduced height */
             width: 100%;
-            /*background-color: #007bff; /* Adjust color as needed */
+            background-color: #e0e0e0; /* Adjust color as needed */
             color: white;
             padding: 0 20px; /* Adjusted padding for a smaller header */
-            border-bottom: 2px solid #ffffff; /* Border at the bottom of the header */
+            border-bottom: 2px solid red; /* Border at the bottom of the header */
             display: flex;
             align-items: center;
             justify-content: right; /* Align content to the right */
             gap: 10px; /* Space between items */
             z-index: 1; /* Lower z-index than sidebar, higher than content */
-            border-bottom: 2px solid #ffffff; /* Adjust thickness and color as needed */
+
     box-shadow: none;
 
     //*margin-left: 130px*/
@@ -32462,8 +32481,49 @@ legend {
         .bg-red {
             background-color: red;
         }
+.tbody{
+    border-radius: 10px;
+}
 
 
+/* Align labels to left and right */
+.label-left {
+    text-align: center;
+    display: block;
+    width: 100%; /* Ensures consistent size */
+}
+
+.label-right {
+    text-align: center;
+    display: block;
+    width: 100%; /* Ensures consistent size */
+}
+
+/* Consistent label sizing */
+.h6 {
+    min-width: 80px; /* Adjust based on your design */
+    font-weight: 600; /* Optional for better label visibility */
+}
+
+/* Optional styling for select inputs */
+.custom-select {
+    width: 100%;
+}
+/* Add a vertical border between left and right sections */
+.border-divider {
+    display: flex;
+    position: relative;
+}
+
+.border-divider::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background-color: #ccc; /* Light gray border color */
+}
 
 
 

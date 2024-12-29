@@ -91,13 +91,13 @@ class NotificationsController extends Controller
 
             if ($difference < 10 && $difference > 0) {
                 // Check if a notification for this cycle already exists to avoid duplicates
-                $existingNotification = Notification::where('message', "Cycle {$cycleName} {$cycle->name} is reaching its max limit.")
+                $existingNotification = Notification::where('message', "Cycle {$cycleName} {$cycle->name} is nearing its max limit.")
                     ->where('is_read', false)
                     ->first();
 
                 if (!$existingNotification) {
                     Notification::create([
-                        'message' => "Cycle {$cycleName} {$cycle->name} is reaching its max limit.",
+                        'message' => "Cycle {$cycleName} {$cycle->name} is nearing its max limit.",
                         'is_read' => false,
                     ]);
                 }
@@ -117,6 +117,22 @@ class NotificationsController extends Controller
                     ]);
                 }
             }
+            if ($difference < 0) {
+                // Check if a notification for this specific "max reached" already exists
+                $existingMaxNotification = Notification::where('message', "Cycle {$cycleName} {$cycle->name} has pased its maximum limit.")
+                    ->where('is_read', false)
+                    ->first();
+
+                if (!$existingMaxNotification) {
+                    Notification::create([
+                        'message' => "Cycle {$cycleName} {$cycle->name} has pased its maximum limit.",
+                        'is_read' => false,
+                    ]);
+                }
+            }
+
+
+
         }
     }
 
@@ -179,9 +195,9 @@ class NotificationsController extends Controller
 public function checkEndDates()
     {
         // Call the method for each date model with respective labels
-        $this->checkEndDateForModel(DateA::class, 'A');
-        $this->checkEndDateForModel(DateB::class, 'B');
-        $this->checkEndDateForModel(DateC::class, 'C');
+        $this->checkEndDateForModel(DateA::class, 'AFA');
+        $this->checkEndDateForModel(DateB::class, 'AFB');
+        $this->checkEndDateForModel(DateC::class, 'AFC');
     }
 
     private function checkEndDateForModel($modelClass, $label)
@@ -244,15 +260,15 @@ public function checkEndDates()
         foreach ($hours as $hour) {
             $difference = $hour->max - $hour->current;
 
-            if ($difference < 100 && $difference > 0) {
+            if ($difference < 50 && $difference > 0) {
                 // Check if a notification for this cycle already exists to avoid duplicates
-                $existingNotification = Notification::where('message', "Hour {$hourName} {$hour->name} is reaching its max limit.{$difference}")
+                $existingNotification = Notification::where('message', "Hour {$hourName} {$hour->name} is approaching its max limit.{$difference}")
                     ->where('is_read', false)
                     ->first();
 
                 if (!$existingNotification) {
                     Notification::create([
-                        'message' => "Hour {$hourName} {$hour->name} is reaching its max limit.{$difference}",
+                        'message' => "Hour {$hourName} {$hour->name} is approaching its max limit.{$difference}",
                         'is_read' => false,
                     ]);
                 }
@@ -272,11 +288,24 @@ public function checkEndDates()
                     ]);
                 }
             }
+            if ($difference < 0) {
+                // Check if a notification for this specific "max reached" already exists
+                $existingMaxeNotification = Notification::where('message', "Hour {$hourName} {$hour->name} has pased its maximum limit.{$difference}")
+                    ->where('is_read', false)
+                    ->first();
+
+                if (!$existingMaxeNotification) {
+                    Notification::create([
+                        'message' => "Hour {$hourName} {$hour->name} has pased its maximum limit.{$difference}",
+                        'is_read' => false,
+                    ]);
+                }
+            }
         }
     }
 
 
-/* after one minute
+// after one minute
     public function sendUserReport()
     {
         // Get users with roles 0 or 1
@@ -297,7 +326,7 @@ public function checkEndDates()
             Mail::to($user->email)->send(new UserReportMail($notifications));
         }
     }
-*/
+/*
 public function sendUserReport()
 {
     // Get users with roles 0 or 1
@@ -318,6 +347,47 @@ public function sendUserReport()
         Mail::to($user->email)->send(new UserReportMail($notifications));
     }
 }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* testing
 public function sendTestEmail()

@@ -80,18 +80,10 @@
                                         <a class="btn btn-primary ml-2" type="button" href="{{route('cycleA.show',$cycle->id)}}"><i class="fas fa-light fa-eye"></i></a>
                                       </div>
                                       <div class="col-sm">
-                                        <a class="btn btn-primary ml-2" type="button" href="{{route('soft.delete',$cycle->id)}}"><i class="fas fa-solid fa-trash"></i></a>
-                                      </div>
-                                      {{--
-                 <div class="col-sm">
-                                        <form action="{{route('cycleA.destroy',$item->id)}}" method="POST">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-danger"> Delete</button>
-                                        </form>
+                                        <a class="btn btn-primary ml-2" type="button" href="{{route('softa.delete',$cycle->id)}}"><i class="fas fa-solid fa-trash"></i></a>
                                       </div>
 
-                                      --}}
+
 
                                     </div>
                                  </div>

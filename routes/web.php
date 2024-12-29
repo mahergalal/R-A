@@ -15,7 +15,7 @@ use App\Http\Controllers;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 
@@ -24,7 +24,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 use App\Http\Controllers\EngineerController;
-Route::get('/pilot/dashboard', function () {
+Route::get('/pilot/LogSheet', function () {
     session_start();
     if($_SESSION ['role']==1){
         return  redirect()->route('engineer');
@@ -32,7 +32,7 @@ Route::get('/pilot/dashboard', function () {
       elseif($_SESSION ['role']==0){
         return redirect()->route('admin') ;
       }
-    return view('Pilot.index');
+    return view('Pilot.create');
 })->middleware(['auth', 'verified'])->name('pilot');
 Route::get('/admin/dashboard', function () {
     session_start();
@@ -42,7 +42,7 @@ Route::get('/admin/dashboard', function () {
       elseif($_SESSION ['role']==2){
         return redirect()->route('pilot') ;
       }
-    return view('Admin.home');
+    return view('analytics');
 })->middleware(['auth', 'verified'])->name('admin');
 
 
@@ -54,7 +54,7 @@ Route::get('/engineer/dashboard', function () {
       elseif($_SESSION ['role']==2){
         return redirect()->route('pilot') ;
       }
-    return view('Engineer.index');
+    return view('analytics');
 })->middleware(['auth', 'verified'])->name('engineer');
 
 Route::middleware('auth')->group(function () {
@@ -64,7 +64,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-
+ Route::resource('LogSheet','LogSheetController');
 
 
 use App\Http\Controllers\CycleAController;
@@ -76,6 +76,7 @@ use App\Http\Controllers\HourcController;
 use App\Http\Controllers\DateAController;
 use App\Http\Controllers\DateBController;
 use App\Http\Controllers\DateCController;
+
 
 
 
@@ -99,7 +100,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('dateB', 'DateBController');
         Route::resource('dateC', 'DateCController');
         Route::view('/analytics', 'analytics')->name('analytics');
-        //Route::resource('LogSheet','LogSheetController');
+        Route::resource('LogSheet','LogSheetController');
 Route::put('/LogSheet/{logSheet}', [LogSheetController::class, 'update'])->name('LogSheet.update');
 Route::put('/logsheet/{logSheet}', [LogSheetController::class, 'update'])->name('LogSheet.update');
 Route::get('/LogSheet', [LogSheetController::class, 'index'])->name('logsheet.index');
@@ -111,7 +112,7 @@ Route::get('/LogSheet', [LogSheetController::class, 'index'])->name('logsheet.in
 Route::get('cycleA/soft/delete/{id}', 'CycleAController@softDelete')
 ->name('soft.delete');
 Route::get('cycleA/soft/delete/{id}', 'CycleAController@softDelete')
-->name('soft.delete');
+->name('softa.delete');
 
 Route::get('/test-notifications', [CycleAController::class, 'checkCycles']);
 Route::get('/trash', 'App\Http\Controllers\CycleAController@trash')->name('cycleA.trash');
@@ -207,10 +208,10 @@ Route::get('LogSheet/soft/delete/{id}', 'LogSheetController@softDelete')
 ->name('soft.delete');
 Route::get('dateC/soft/delete/{id}', 'LogSheetController@softDelete')
 ->name('softl.delete');
-Route::get('/trashl', 'App\Http\Controllers\LogSheetController@trash')->name('LogSheet.trash');
+//Route::delete('/logsheet/delete/{id}', [LogSheetController::class, 'deleteForEver'])->name('LogSheet.delete.trash');
+Route::delete('/logsheet/delete/{id}', 'App\Http\Controllers\LogSheetController@deleteForEver')->name('LogSheet.delete.trash');
 
-Route::get('/backl/{id}', 'App\Http\Controllers\LogSheetController@backSoftDelete')->name('LogSheet.back.trash');
-Route::get('/deltel/{id}', 'App\Http\Controllers\LogSheetController@deleteForEver')->name('LogSheet.delete.trash');
+
 
 
 
@@ -218,8 +219,14 @@ Route::get('/deltel/{id}', 'App\Http\Controllers\LogSheetController@deleteForEve
 });
 //routing for Admin just
 
+Route::get('/trashl', 'App\Http\Controllers\LogSheetController@trash')->name('LogSheet.trash');
 
+Route::get('/backl/{id}', 'App\Http\Controllers\LogSheetController@backSoftDelete')->name('LogSheet.back.trash');
+Route::get('/deltel/{id}', 'App\Http\Controllers\LogSheetController@deleteForEver')->name('LogSheet.delete.trash');
+
+use App\Http\Controllers\LogSheetController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\NotificationsController;
 
 // Routes for role 0
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -259,12 +266,17 @@ Route::get('/deleteu/{id}', 'App\Http\Controllers\UserController@deleteForEver')
 //Notifications` pages
 Route::get('/notifications/view', [NotificationsController::class, 'view'])->name('notification.index');
 Route::delete('/notifications/{id}', [NotificationsController::class, 'destroy'])->name('notifications.destroy');
+
+
+Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
+
+Route::post('/notifications/{id}/read', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
     });
 });
 
 
 
-use App\Http\Controllers\LogSheetController;
+
 Route::resource('LogSheet','LogSheetController');
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::group(['middleware' => function ($request, $next) {
@@ -285,11 +297,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 //Notifications
 
-use App\Http\Controllers\NotificationsController;
 
-Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
 
-Route::post('/notifications/{id}/read', [NotificationsController::class, 'markAsRead'])->name('notifications.markAsRead');
+
 
 
 Route::get('/test-end-dates', [NotificationsController::class, 'checkEndDates']);
@@ -339,6 +349,8 @@ Route::get('/plane-analytics-data', [ChartController::class, 'getPlaneAnalyticsD
 
 
 Route::view('/hi', 'hi');
+Route::view('/export_final_updated', 'export_final_updated');
+
 
 
 

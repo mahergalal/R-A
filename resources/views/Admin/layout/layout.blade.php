@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Admin</title>
+    <title>R&A</title>
 
     <!-- Meta Tags for SEO -->
     <meta name="title" content="Neumorphism Components - Tables">
@@ -187,10 +187,23 @@
 
 
 </head>
-<header class="header-global d-flex pt-6 pt-md-7 border-bottom border-light bg-primary">
-    <nav id="navbar-main" aria-label="Primary navigation" class="navbar navbar-main navbar-expand-lg navbar-theme-primary navbar-light">
+<header class="header-global d-flex pt-6 pt-md-7 border-bottom border-light ">
+    <nav id="navbar-main" aria-label="Primary navigation" class="navbar navbar-main navbar-expand-lg  navbar-light">
+        @auth
+    @if(auth()->user()->role === 1)
+            <div class="profile-section-r9  shadow-soft">
+
+                <div class="profile-info">
+                    <p class="mb-0 font-weight-bold" style="font-size: 30px;" ><B>{{ Auth::user()->name }}</B></p>
+
+                </div>
+            </div>
+
+            @endif
+            @endauth
+
         <div class="container position-relative">
-            <a class="navbar-brand shadow-soft py-2 px-3 rounded border border-light" style="margin-left: 6rem;" href="../pages/On-Cycle.html">
+            <a class="navbar-brand shadow-soft py-2 px-3 rounded border border-light" style="margin-left: 6rem;" href="{{ route('analytics')}}">
     <img class="navbar-brand-dark" src="{{ asset('assets/img/yemenia-logo.png') }}" alt="Logo dark">
     <img class="navbar-brand-light" src="{{ asset('assets/img/yemenia-logo.png') }}" alt="Logo light">
 </a>
@@ -218,13 +231,13 @@
                             <a href="#" class="dropdown-toggle dropdown-item d-flex justify-content-between align-items-center" aria-haspopup="true" aria-expanded="false">On-Cycle <i class="fas fa-angle-right nav-link-arrow"></i></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#" class="dropdown-item">AFA</a>
+                                    <a href="{{ route('cycleA.index')}}" class="dropdown-item">AFA</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="dropdown-item">AFB</a>
+                                    <a href="{{ route('cycleB.index')}}" class="dropdown-item">AFB</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="dropdown-item">AFC</a>
+                                    <a href="{{ route('cycleC.index')}}" class="dropdown-item">AFC</a>
                                 </li>
                             </ul>
                         </li>
@@ -232,13 +245,13 @@
                             <a href="#" class="dropdown-toggle dropdown-item d-flex justify-content-between align-items-center" aria-haspopup="true" aria-expanded="false">Hour <i class="fas fa-angle-right nav-link-arrow"></i></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#" class="dropdown-item">AFA</a>
+                                    <a href="{{ route('hour.index')}}" class="dropdown-item">AFA</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="dropdown-item">AFB</a>
+                                    <a href="{{ route('hourb.index')}}" class="dropdown-item">AFB</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="dropdown-item">AFC</a>
+                                    <a href="{{ route('hourc.index')}}" class="dropdown-item">AFC</a>
                                 </li>
                             </ul>
                         </li>
@@ -246,19 +259,31 @@
                             <a href="#" class="dropdown-toggle dropdown-item d-flex justify-content-between align-items-center" aria-haspopup="true" aria-expanded="false">On-Date <i class="fas fa-angle-right nav-link-arrow"></i></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="#" class="dropdown-item">AFA</a>
+                                    <a href="{{ route('dateA.index')}}" class="dropdown-item">AFA</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="dropdown-item">AFB</a>
+                                    <a href="{{ route('dateB.index')}}" class="dropdown-item">AFB</a>
                                 </li>
                                 <li>
-                                    <a href="#" class="dropdown-item">AFC</a>
+                                    <a href="{{ route('dateC.index')}}" class="dropdown-item">AFC</a>
                                 </li>
                             </ul>
                         </li>
 
                 </li>
-                            <li><a class="dropdown-item" href="#">Logsheets</a></li>
+                            <li><a class="dropdown-item" href="{{ route('LogSheet.index')}}">Logsheets</a></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                    Log Out
+                            </a>
+                            </form>
+
+                    </li>
 
 
                         </ul>
@@ -272,14 +297,16 @@
         <div class="align-items-lg-left">
             <div style="position: relative;">
                 <!-- Bell icon -->
+                @if(auth()->check() && (auth()->user()->role === 0 || auth()->user()->role === 1))
                 <a href="#" onclick="toggleNotifications()" class="position-relative">
-                    <i class="fa-regular fa-bell" type="button"></i>
+                     <i class="fa-regular fa-bell navbar-brand shadow-soft py-2 px-3 rounded border border-light" type="button"></i>
                     @if($notifications->count() > 0)
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span class="position-absolute top5 start-100 translate-middle badge rounded-pill bg-danger">
                             {{ $notifications->count() }}
                         </span>
                     @endif
                 </a>
+            @endif
 
                 <!-- Notification Dropdown -->
                 <div id="notificationDropdown" class="notification-dropdown">
@@ -303,6 +330,33 @@
             </div>
 
         </div>
+
+        @auth
+        @if(auth()->user()->role === 2)
+        <ul class="navbar-nav navbar-nav-hover align-items-lg-center">
+            <div class="profile-section-r9 shadow-soft">
+                <div class="profile-info dropdown">
+                    <!-- User Name with Dropdown Trigger -->
+                    <p class="mb-0 font-weight-bold dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 30px; cursor: pointer;">
+                        <b>{{ Auth::user()->name }}</b>
+                    </p>
+
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </ul>
+        @endif
+    @endauth
+
     </nav>
 </header>
 
@@ -315,11 +369,11 @@
     <nav id="sidebarMenu" class="sidebar" >
         <div class="sidebar-inner px-4 pt-3">
             <!-- Profile Section -->
-            <div class="profile-section">
+            <div class="profile-section  shadow-soft">
 
                 <div class="profile-info">
-                    <p class="mb-0 font-weight-bold"></p>
-                    <small></small>
+                    <p class="mb-0 d-flex font-weight-bold" style="font-size: 30px;" ><B>{{ Auth::user()->name }}</B></p>
+                    <small  style="font-size: 25px;">Admin</small>
                 </div>
             </div>
 
@@ -457,7 +511,7 @@
 
     @yield('adminContent')
 
-                        <footer class="d-flex pb-5 pt-6 pt-md-7  bg-primary">
+                        <footer class="d-flex pb-5 pt-6 pt-md-7  ">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-lg-4"></div>

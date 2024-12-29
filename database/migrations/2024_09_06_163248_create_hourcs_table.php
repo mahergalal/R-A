@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('serial');
-            $table->double('current')->default(0);
+            $table->double('current',8, 2)->default(0);
             $table->string('max');
             $table->timestamps();
             $table->softDeletes();

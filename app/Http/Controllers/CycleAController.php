@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\cycleA;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\NotificationsController;
 use App\Models\Notification;
@@ -20,6 +21,7 @@ class CycleAController extends Controller
      $cycleA = cycleA::latest()->paginate();
        return view('Admin.cycleA.index', compact('cycleA'));
     }
+
 
     public function trash()
     {
@@ -54,7 +56,7 @@ class CycleAController extends Controller
 
         $cycleA = cycleA::create($request->all());
          return redirect()->route('cycleA.index')
-         ->with('success','cycleA added successflly') ;
+         ->with('success','cycleA added successfully') ;
     }
 
     /**
@@ -90,7 +92,7 @@ class CycleAController extends Controller
 
         $cycleA->update($request->all());
          return redirect()->route('cycleA.index')
-         ->with('success','cycleA updated successflly') ;
+         ->with('success','cycleA updated successfully') ;
     }
 
     /**
@@ -103,7 +105,7 @@ class CycleAController extends Controller
     {
         $cycleA->delete();
         return redirect()->route('cycleA.index')
-        ->with('success','cycleA deleted successflly') ;
+        ->with('success','cycleA deleted successfully') ;
     }
 
 
